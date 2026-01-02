@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengaturan Bel Otomatis</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+
+  body {
+    height:100vh; display:flex; flex-direction:column;
+    background: radial-gradient(circle at top, #042a52, #020b14);
+    overflow:hidden;
+    color:white;
+  }
+
+ /* HEADER FIXED */
+header {
+  position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:600; letter-spacing:1px;
+  background: rgba(15, 30, 60, 0.75);
+  border-bottom: 1px solid rgba(0,255,255,0.2);
+  text-shadow: 0 0 8px #00eaff;
+  box-shadow: 0 2px 8px rgba(0,255,255,0.12);
+  z-index: 20;
+}
+
+/* HAMBURGER */
+.hamburger {
+  position:absolute; left:15px; cursor:pointer;
+  width:28px; height:22px; display:flex; flex-direction:column;
+  justify-content:space-between; align-items:center;
+}
+.hamburger span {
+  width:100%; height:3px; background:#00eaff;
+  border-radius:5px; box-shadow:0 0 6px #00eaff;
+  transition:0.3s;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position:fixed; top:0; left:-250px; width:230px; height:100vh;
+  background:rgba(3, 17, 30, 0.95);
+  border-right:1px solid rgba(0,255,255,0.25);
+  box-shadow:2px 0 10px rgba(0,255,255,0.3);
+  padding-top:70px; transition:0.35s; z-index:21;
+}
+.sidebar-title {
+  color:#00eaff; font-size:16px; font-weight:700;
+  padding:10px 20px 12px; border-bottom:1px solid rgba(0,255,255,0.25);
+  margin-bottom:10px; letter-spacing:1px;
+}
+.sidebar a {
+  display:block; padding:14px 20px; font-size:14px;
+  color:#00eaff; text-decoration:none; font-weight:500;
+  transition:0.25s;
+}
+.sidebar a:hover {
+  background:rgba(0,255,255,0.1);
+  border-left:4px solid #00eaff;
+  text-shadow:0 0 8px #00eaff;
+}
+
+/* OVERLAY */
+.overlay {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
+  opacity:0; visibility:hidden; transition:0.3s; z-index:19;
+}
+.overlay.active { opacity:1; visibility:visible; }
+
+/* MAIN SCROLL ONLY */
+main {
+  margin-top:60px; margin-bottom:50px; padding:15px;
+  overflow-y:auto; flex:1;
+}
+h2 {
+  text-align:center; font-size:26px; font-weight:700;
+  text-shadow:0 0 12px #00eaff; margin-bottom:10px;
+}
+.cyber-line {
+  width:150px; height:3px; background:linear-gradient(90deg, transparent, #00eaff, transparent);
+  margin:10px auto 20px; border-radius:5px; box-shadow:0 0 10px #00eaff;
+}
+
+/* CARD */
+.card {
+  background:rgba(0,255,255,0.06);
+  border:1px solid rgba(0,255,255,0.25);
+  box-shadow:0 0 10px rgba(0,255,255,0.3);
+  padding:15px; border-radius:10px; margin-bottom:20px;
+}
+
+/* FORM INPUT */
+input, select {
+  width:100%; padding:10px; margin:8px 0;
+  background:rgba(10,40,60,0.7); border:1px solid #00eaff;
+  border-radius:8px; color:#00eaff; font-weight:600;
+}
+.btn-add {
+  margin-top:10px; padding:10px 20px; width:100%;
+  background:#00eaff; border:none; cursor:pointer;
+  font-weight:700; border-radius:8px; color:#00151e;
+  box-shadow:0 0 15px #00eaff;
+  transition:0.25s;
+}
+.btn-add:hover { transform:scale(1.05); }
+
+/* RESPONSIVE TABLE WRAPPER */
+.table-wrap {
+  width:100%; overflow-x:auto;
+  border-radius:10px;
+}
+table {
+  width:100%; border-collapse:collapse; min-width:480px;
+}
+th, td {
+  padding:10px; text-align:center;
+  border-bottom:1px solid rgba(0,255,255,0.2);
+  font-size:13px;
+}
+.btn-del {
+  padding:5px 10px; background:#ff1744; border:none;
+  border-radius:6px; cursor:pointer; color:white;
+  font-weight:600; box-shadow:0 0 8px #ff1744;
+  transition:0.25s; font-size:12px;
+}
+.btn-del:hover { transform:scale(1.05); }
+
+/* FOOTER FIXED */
+footer {
+  position: fixed; bottom: 0; left: 0; width: 100%; height: 45px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; opacity:0.8;
+  background: rgba(15, 30, 60, 0.75);
+  border-top: 1px solid rgba(0,255,255,0.2);
+  box-shadow: 0 -2px 8px rgba(0,255,255,0.12);
+  z-index: 20;
+}
+
+/* ROW */
+.alarm-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* TOGGLE */
+.toggle-wrap {
+  position: relative;
+  width: 42px;
+  height: 22px;
+}
+
+.toggle-wrap input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #555;
+  border-radius: 20px;
+  transition: 0.3s;
+  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 2px;
+  top: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+/* ON */
+.toggle-wrap input:checked + .toggle-slider {
+  background: #00eaff;
+  box-shadow: 0 0 12px #00eaff;
+}
+
+.toggle-wrap input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* LABEL */
+.alarm-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00eaff;
+}
+
+/* STATUS */
+.alarm-status {
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.alarm-status.off { color: #ff4d4d; }
+.alarm-status.on  { color: #00ff9c; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  BEL OTOMATIS
+</header>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-title">MENU</div>
+  <a href="index.html">Beranda</a>
+  <a href="dasboard.html">Dashboard</a>
+  <a href="lampu.html">Kontrol Lampu</a>
+  <a href="bel.html">Jadwal Bel</a>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<main>
+
+<h2>Pengaturan Jadwal Bel</h2>
+<div class="cyber-line"></div>
+
+<!-- FORM -->
+<div class="card">
+  <label>Hari:</label>
+  <select id="hari">
+    <option value="">Pilih Hari</option>
+    <option>Senin</option><option>Selasa</option><option>Rabu</option>
+    <option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option>
+  </select>
+
+  <label>Tanggal (Opsional):</label>
+  <input type="date" id="tanggalBel">
+
+  <label>Jam Bel:</label>
+  <input type="time" id="jamBel">
+
+  <label>Kegiatan:</label>
+  <select id="preset">
+    <option value="">Pilih Kegiatan</option>
+    <option>Masuk </option>
+    <option>Pergantian Jam Pelajaran</option>
+    <option>Istirahat</option>
+    <option>Pulang Sekolah</option>
+
+  </select>
+  <input type="text" id="namaKegiatan" placeholder="Atau ketik sendiri...">
+
+  <button class="btn-add" onclick="tambahJadwal()">+ Tambahkan Jadwal</button>
+  <div class="alarm-row">
+  <label class="toggle-wrap">
+    <input type="checkbox" id="mq2Toggle" onchange="toggleMQ2(this)">
+    <span class="toggle-slider"></span>
+  </label>
+
+  <span class="alarm-label">Alarm Darurat</span>
+</div>
+
+<div id="alarmStatus" class="alarm-status off">
+  Status: NONAKTIF
+</div>
+
+</div>
+
+<!-- TABLE -->
+<div class="card table-wrap">
+  <table id="tabelJadwal">
+    <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Kegiatan</th><th>Aksi</th></tr>
+  </table>
+</div>
+
+</main>
+
+<footer>© 2025 Smart IoT Futuristic UI</footer>
+
+<script>
+function toggleMenu() {
+  let sidebar = document.getElementById("sidebar");
+  let overlay = document.getElementById("overlay");
+  if (sidebar.style.left === "0px") {
+    sidebar.style.left = "-250px"; overlay.classList.remove("active");
+  } else {
+    sidebar.style.left = "0px"; overlay.classList.add("active");
+  }
+}
+
+/* ===================== LOCALSTORAGE SYSTEM ===================== */
+let jadwalBel = JSON.parse(localStorage.getItem("jadwalBel") || "[]");
+let editIndex = -1; // ID untuk edit
+
+window.onload = () => tampilkanData();
+
+function tambahJadwal() {
+  let hari = document.getElementById("hari").value;
+  let tanggal = document.getElementById("tanggalBel").value;
+  let jam = document.getElementById("jamBel").value;
+  let preset = document.getElementById("preset").value;
+  let manual = document.getElementById("namaKegiatan").value;
+  let kegiatan = manual !== "" ? manual : preset;
+
+  if (hari === "" || jam === "" || kegiatan === "") {
+    alert("⚠ Harap isi minimal: Hari, Jam, dan Kegiatan!");
+    return;
+  }
+
+  let data = { hari, tanggal, jam, kegiatan };
+
+  if (editIndex === -1) {
+    jadwalBel.push(data);
+  } else {
+    jadwalBel[editIndex] = data;
+    editIndex = -1;
+    document.querySelector(".btn-add").innerText = "+ Tambahkan Jadwal";
+  }
+
+  localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
+  tampilkanData();
+  resetForm();
+}
+
+function resetForm() {
+  document.getElementById("hari").value = "";
+  document.getElementById("tanggalBel").value = "";
+  document.getElementById("jamBel").value = "";
+  document.getElementById("preset").value = "";
+  document.getElementById("namaKegiatan").value = "";
+}
+
+function editJadwal(index) {
+  let data = jadwalBel[index];
+
+  document.getElementById("hari").value = data.hari;
+  document.getElementById("tanggalBel").value = data.tanggal;
+  document.getElementById("jamBel").value = data.jam;
+  document.getElementById("namaKegiatan").value = data.kegiatan;
+  document.getElementById("preset").value = "";
+
+  editIndex = index;
+  document.querySelector(".btn-add").innerText = "✔ Simpan Perubahan";
+}
+
+function hapusJadwal(index) {
+  if (confirm("Yakin ingin menghapus jadwal bel ini?")) {
+    jadwalBel.splice(index, 1);
+    localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
+    tampilkanData();
+  }
+}
+
+function tampilkanData() {
+  let tabel = document.getElementById("tabelJadwal");
+  tabel.innerHTML = `<tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Kegiatan</th><th>Aksi</th></tr>`;
+
+  jadwalBel.forEach((data, i) => {
+    tabel.innerHTML += `
+      <tr>
+        <td>${data.hari}</td>
+        <td>${data.tanggal === "" ? "-" : data.tanggal}</td>
+        <td>${data.jam}</td>
+        <td>${data.kegiatan}</td>
+        <td>
+          <button class="btn-del" onclick="hapusJadwal(${i})">Hapus</button>
+          <button class="btn-del" style="background:#ffc400; box-shadow:0 0 8px #ffc400;" onclick="editJadwal(${i})">Edit</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
+

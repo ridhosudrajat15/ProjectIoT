@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontrol Lampu MQTT</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#042a52,#020b14);
+  color:white;
+  overflow:hidden; /* ⬅️ penting */
+}
+
+/* ===== HEADER ===== */
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:600;
+  background:rgba(15,30,60,.6);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,255,255,.2);
+  z-index:10;
+}
+
+.hamburger{
+  position:absolute;
+  left:15px;
+  cursor:pointer;
+  width:28px;
+  height:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.hamburger span{
+  width:100%;
+  height:3px;
+  background:#00eaff;
+  border-radius:5px;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-250px;
+  width:230px;
+  height:100vh;
+  background:rgba(3,17,30,.95);
+  padding-top:70px;
+  transition:.35s;
+  z-index:11;
+}
+.sidebar a{
+  display:block;
+  padding:14px 20px;
+  color:#00eaff;
+  text-decoration:none;
+}
+
+/* ===== OVERLAY ===== */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.4);
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
+  z-index:9;
+}
+.overlay.active{
+  opacity:1;
+  visibility:visible;
+}
+
+/* ===== MAIN (SCROLL AREA) ===== */
+main{
+  position:fixed;
+  top:60px;               /* tinggi header */
+  bottom:45px;            /* tinggi footer */
+  left:0;
+  right:0;
+  padding:25px;
+  overflow-y:auto;        /* ⬅️ hanya main yang scroll */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:45px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  opacity:.75;
+  background:rgba(15,30,60,.6);
+  z-index:10;
+}
+
+/* ===== KOMPONEN ===== */
+.status-box{
+  font-size:16px;
+  font-weight:600;
+  padding:10px 20px;
+  border-radius:8px;
+  border:2px solid #00eaff;
+  margin-bottom:20px;
+  color:#00eaff;
+}
+
+.btn-control{
+  width:160px;
+  padding:12px;
+  margin:10px;
+  font-size:16px;
+  font-weight:700;
+  border-radius:10px;
+  border:2px solid #00eaff;
+  background:rgba(0,255,255,.08);
+  color:#00eaff;
+  cursor:pointer;
+}
+
+.lamp-img{
+  width:160px;
+  margin-bottom:20px;
+  transition:.3s;
+}
+
+.lamp-on{
+  filter:drop-shadow(0 0 15px #ffeb3b) brightness(1.3);
+}
+
+/* ===== STATUS ESP ===== */
+.esp-online{
+  border-color:#00ff88;
+  color:#00ff88;
+}
+
+.esp-offline{
+  border-color:#ff5252;
+  color:#ff5252;
+  opacity:.8;
+}
+.wifi-icon{
+  position:absolute;
+  right:15px;
+  cursor:pointer;
+  font-size:22px;
+  color:#00eaff;
+  transition:.3s;
+}
+
+.wifi-icon:hover{
+  color:#ff5252;
+  transform:scale(1.15);
+}
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
+  z-index:20;
+}
+
+.modal-overlay.active{
+  opacity:1;
+  visibility:visible;
+}
+
+.modal-box{
+  width:320px;
+  background:rgba(10,25,45,.95);
+  border:2px solid #00eaff;
+  border-radius:14px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(0,234,255,.3);
+}
+
+.modal-box h3{
+  color:#00eaff;
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  font-size:14px;
+  opacity:.85;
+  margin-bottom:15px;
+}
+
+.modal-box input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:2px solid #00eaff;
+  background:transparent;
+  color:#00eaff;
+  text-align:center;
+  outline:none;
+  margin-bottom:15px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+}
+
+.modal-actions button{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+  border:none;
+}
+
+.btn-cancel{
+  background:rgba(255,80,80,.25);
+  color:#ff5252;
+  border:2px solid #ff5252;
+}
+
+.btn-confirm{
+  background:rgba(0,255,100,.25);
+  color:#00ff64;
+  border:2px solid #00ff64;
+}
+
+
+</style>
+</head>
+
+<body>
+<header>
+<div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+Kontrol Lampu
+<!-- ICON WIFI -->
+  <div class="wifi-icon" onclick="resetWiFi()" title="Reset WiFi ESP">
+    🛜 
+  </div>
+</header>
+
+<div class="sidebar" id="sidebar">
+<a href="#">Kontrol Lampu</a>
+</div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- ===== MODAL RESET WIFI ===== -->
+<div class="modal-overlay" id="wifiModal">
+  <div class="modal-box">
+    <h3>Reset WiFi ESP</h3>
+    <p>
+      ESP akan restart dan masuk mode setup.<br>
+      Masukkan sandi untuk melanjutkan.
+    </p>
+
+    <input type="password" id="wifiPin" placeholder="Masukkan sandi">
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeWifiModal()">Batal</button>
+      <button class="btn-confirm" onclick="confirmResetWiFi()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUKSES RESET WIFI -->
+<div class="modal-overlay" id="wifiSuccessModal">
+  <div class="modal-box">
+    <h3>✅ Reset Berhasil</h3>
+    <p>ESP telah masuk mode setup.<br>Silakan connect ke <b>ESP32-Setup</b></p>
+    <div class="modal-actions">
+      <button class="btn-confirm" onclick="closeWifiSuccessModal()">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<main>
+<img id="lampIcon" class="lamp-img" src="lampu.png">
+<div id="espStatus" class="status-box">
+  ESP: Mengecek koneksi...
+</div>
+<div id="statusLampu" class="status-box">Status: Menghubungkan MQTT...</div>
+<div id="modeLampu" class="status-box">Mode: MANUAL</div>
+<button class="btn-control" onclick="lampuOn()">NYALAKAN</button>
+<button class="btn-control" onclick="lampuOff()">MATIKAN</button>
+<button class="btn-control" onclick="setAuto()">MODE AUTO</button>
+
+</main>
+
+<footer>© RIDHO SUDRAJAT</footer>
+
+<script>
+
+let autoAktif = false;
+
+
+function toggleMenu(){
+ let s=document.getElementById('sidebar');
+ let o=document.getElementById('overlay');
+ if(s.style.left==='0px'){s.style.left='-250px';o.classList.remove('active')}else{s.style.left='0px';o.classList.add('active')}
+}
+
+// ================= MQTT =================
+// Topic:
+// iot/lampu/kontrol  -> ON / OFF
+// iot/lampu/mode     -> AUTO
+// iot/lampu/status   -> ON / OFF
+// iot/lampu/modeStatus -> MANUAL / AUTO
+
+const broker = 'wss://broker.hivemq.com:8884/mqtt';
+const client = mqtt.connect(broker);
+
+client.on('connect',()=>{
+ document.getElementById('statusLampu').innerText='Status: MQTT Terhubung';
+
+ client.subscribe('iot/lampu/status');
+ client.subscribe('iot/lampu/modeStatus');
+ client.subscribe('iot/lampu/autoStatus');
+ client.subscribe('iot/lampu/espStatus');
+
+ // minta status awal
+ client.publish('iot/lampu/requestStatus','REQ');
+});
+
+
+
+client.on('message',(topic,message)=>{
+ const msg = message.toString();
+
+ if(topic === 'iot/lampu/espStatus'){
+  const espBox = document.getElementById('espStatus');
+
+  if(msg === 'ONLINE'){
+    espBox.innerText = 'ESP: ONLINE';
+    espBox.classList.remove('esp-offline');
+    espBox.classList.add('esp-online');
+
+    enableButtons(true);
+
+    // minta status lampu setelah ESP online
+    client.publish('iot/lampu/requestStatus','REQ');
+  }
+
+  if(msg === 'OFFLINE'){
+    espBox.innerText = 'ESP: OFFLINE';
+    espBox.classList.remove('esp-online');
+    espBox.classList.add('esp-offline');
+
+    document.getElementById('statusLampu').innerText =
+      'Status: ESP tidak terhubung';
+
+    document.getElementById('lampIcon').classList.remove('lamp-on');
+
+    enableButtons(false);
+  }
+}
+
+
+ if(topic==='iot/lampu/status'){
+  if(msg==='ON'){
+   document.getElementById('statusLampu').innerText='Status: Lampu Menyala';
+   document.getElementById('lampIcon').classList.add('lamp-on');
+  }
+  if(msg==='OFF'){
+   document.getElementById('statusLampu').innerText='Status: Lampu Mati';
+   document.getElementById('lampIcon').classList.remove('lamp-on');
+  }
+ }
+
+ if(topic==='iot/lampu/modeStatus'){
+  document.getElementById('modeLampu').innerText='Mode: '+msg;
+  autoAktif = (msg === 'AUTO');
+  updateAutoButton();
+}
+
+ if(topic === 'iot/lampu/autoStatus'){
+  if(msg === 'GELAP_ON'){
+    document.getElementById('statusLampu').innerText =
+      'Status: Kondisi gelap, lampu menyala';
+    document.getElementById('lampIcon').classList.add('lamp-on');
+  }
+
+  if(msg === 'TERANG_OFF'){
+    document.getElementById('statusLampu').innerText =
+      'Status: Kondisi terang, lampu mati';
+    document.getElementById('lampIcon').classList.remove('lamp-on');
+  }
+   // ===== PIR (DISAMAKAN DENGAN LDR) =====
+  if(msg === 'PIR_ON'){
+    document.getElementById('statusLampu').innerText =
+      'Status: Ada gerakan, lampu menyala';
+    document.getElementById('lampIcon').classList.add('lamp-on');
+  }
+
+  if(msg === 'PIR_TIMEOUT_OFF'){
+    document.getElementById('statusLampu').innerText =
+      'Status: Tidak ada gerakan (30 detik), lampu mati';
+    document.getElementById('lampIcon').classList.remove('lamp-on');
+  }
+}
+});
+
+function lampuOn(){
+ client.publish('iot/lampu/kontrol','ON');
+ document.getElementById('modeLampu').innerText='Mode: MANUAL';
+}
+function lampuOff(){
+ client.publish('iot/lampu/kontrol','OFF');
+ document.getElementById('modeLampu').innerText='Mode: MANUAL';
+}
+
+function setAuto(){
+  if(!autoAktif){
+    client.publish('iot/lampu/mode','AUTO');
+  }else{
+    client.publish('iot/lampu/mode','MANUAL');
+  }
+
+  setTimeout(()=>{
+    client.publish('iot/lampu/requestStatus','REQ');
+  },300);
+}
+
+
+function updateAutoButton(){
+  const btn = document.querySelector("button[onclick='setAuto()']");
+
+  if(autoAktif){
+    btn.style.background = 'rgba(0,255,100,.25)';
+    btn.style.borderColor = '#00ff64';
+    btn.style.color = '#00ff64';
+    btn.innerText = 'AUTO AKTIF';
+  }else{
+    btn.style.background = 'rgba(255,80,80,.25)';
+    btn.style.borderColor = '#ff5252';
+    btn.style.color = '#ff5252';
+    btn.innerText = 'AUTO MATI';
+  }
+}
+
+
+function enableButtons(enable){
+  document.querySelectorAll('.btn-control').forEach(btn=>{
+    btn.disabled = !enable;
+    btn.style.opacity = enable ? '1' : '0.4';
+    btn.style.cursor = enable ? 'pointer' : 'not-allowed';
+  });
+}
+enableButtons(false);
+
+
+const WIFI_RESET_PIN = "1234";
+
+function confirmResetWiFi(){
+  const pin = document.getElementById('wifiPin').value;
+
+  if(pin !== WIFI_RESET_PIN){
+    alert("❌ Sandi salah!");
+    return;
+  }
+
+  // kirim perintah reset ke ESP
+  client.publish('iot/lampu/wifiReset','RESET');
+
+  document.getElementById('espStatus').innerText =
+    'ESP: Reset WiFi...';
+
+  document.getElementById('espStatus').classList.remove('esp-online');
+  document.getElementById('espStatus').classList.add('esp-offline');
+
+  closeWifiModal();
+
+  // ❌ HAPUS alert lama
+  // alert("✅ Reset WiFi berhasil.\nSilakan connect ke ESP32-Setup");
+
+  // Gunakan modal cantik
+  showWifiSuccessModal();
+}
+
+
+function resetWiFi(){
+  document.getElementById('wifiModal').classList.add('active');
+  document.getElementById('wifiPin').value = '';
+}
+
+function closeWifiModal(){
+  document.getElementById('wifiModal').classList.remove('active');
+}
+
+function showWifiSuccessModal(){
+  document.getElementById('wifiSuccessModal').classList.add('active');
+}
+
+function closeWifiSuccessModal(){
+  document.getElementById('wifiSuccessModal').classList.remove('active');
+}
+
+
+
+</script>
+</body>
+</html>
