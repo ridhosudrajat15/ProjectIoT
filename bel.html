@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -212,6 +213,61 @@ footer {
 .alarm-status.off { color: #ff4d4d; }
 .alarm-status.on  { color: #00ff9c; }
 
+/* ================= LCD DISPLAY ================= */
+.lcd-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.lcd-display {
+  width: 100%;
+  max-width: 360px;
+  height: 120px;
+  padding: 12px 16px;
+
+  background-image: url("lcd1.png"); /* ← INI YANG PENTING */
+  background-size: cover;
+  background-position: center;
+
+  border-radius: 8px;
+  border: 2px solid #00eaff;
+
+  box-shadow:
+    inset 0 0 20px rgba(0,255,255,0.35),
+    0 0 20px rgba(0,255,255,0.45);
+
+  color: #00ff9c;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lcd-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #00eaff;
+  margin-bottom: 6px;
+  text-shadow: 0 0 6px #00eaff;
+}
+
+.lcd-text {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 0 0 8px #00ff9c;
+}
+
+.lcd-time {
+  font-size: 14px;
+  margin-top: 4px;
+  color: #7fffe5;
+}
+
+
 </style>
 </head>
 
@@ -249,6 +305,19 @@ footer {
 
   <div class="alarm-status off" id="mqttStatus">
     MQTT: Menghubungkan MQTT...
+  </div>
+</div>
+
+<!-- NEXT BELL -->
+<div class="card">
+  <div class="lcd-wrapper">
+    <div class="lcd-display">
+      <div class="lcd-title">🔔 BELL SELANJUTNYA</div>
+      <div class="lcd-text" id="nextBellText">
+        Memuat jadwal...
+      </div>
+      <div class="lcd-time" id="nextBellTime"></div>
+    </div>
   </div>
 </div>
 
@@ -320,10 +389,16 @@ function toggleMenu() {
 }
 
 /* ===================== LOCALSTORAGE SYSTEM ===================== */
+const topicBell = "sekolah/bel/control";
+
 let jadwalBel = JSON.parse(localStorage.getItem("jadwalBel") || "[]");
 let editIndex = -1; // ID untuk edit
 
-window.onload = () => tampilkanData();
+window.onload = () => {
+  tampilkanData();
+  updateNextBell();
+};
+
 
 function tambahJadwal() {
   let hari = document.getElementById("hari").value;
@@ -349,8 +424,10 @@ function tambahJadwal() {
   }
 
   localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
-  tampilkanData();
-  resetForm();
+tampilkanData();
+updateNextBell();
+resetForm();
+
 }
 
 function resetForm() {
@@ -379,6 +456,8 @@ function hapusJadwal(index) {
     jadwalBel.splice(index, 1);
     localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
     tampilkanData();
+    updateNextBell();
+
   }
 }
 
@@ -403,7 +482,99 @@ function tampilkanData() {
   
 }
 
+function updateNextBell() {
+  const now = new Date();
+  const hariNow = now.toLocaleDateString("id-ID", { weekday: "long" });
+  const tanggalNow = now.toISOString().slice(0, 10);
+  const jamNow = now.toTimeString().slice(0, 5);
+
+  let kandidat = [];
+
+  jadwalBel.forEach(j => {
+    const cocokHari = j.hari === hariNow;
+    const cocokTanggal = j.tanggal === "" || j.tanggal === tanggalNow;
+
+    if (!cocokHari || !cocokTanggal) return;
+
+    if (j.jam > jamNow) {
+      kandidat.push(j);
+    }
+  });
+
+  kandidat.sort((a, b) => a.jam.localeCompare(b.jam));
+
+  const el = document.getElementById("nextBellText");
+const timeEl = document.getElementById("nextBellTime");
+
+if (kandidat.length === 0) {
+  el.textContent = "-";
+  timeEl.textContent = "";
+  el.style.color = "#ff4d4d";
+} else {
+  const next = kandidat[0];
+  el.textContent = next.kegiatan.toUpperCase();
+  timeEl.textContent = "⏰ " + next.jam;
+  el.style.color = "#00ff9c";
+}
+
+}
+
+
+let lastBellKey = "";
+let lastMinute = "";
+
+setInterval(() => {
+  if (!espOnline || !mqttConnected) return;
+
+  const now = new Date();
+  const hariNow = now.toLocaleDateString("id-ID", { weekday: "long" });
+  const tanggalNow = now.toISOString().slice(0, 10);
+  const jamNow = now.toTimeString().slice(0, 5);
+
+  if (jamNow !== lastMinute) {
+    lastBellKey = "";
+    lastMinute = jamNow;
+  }
+
+  jadwalBel.forEach(jadwal => {
+    const cocokHari = jadwal.hari === hariNow;
+    const cocokTanggal = jadwal.tanggal === "" || jadwal.tanggal === tanggalNow;
+    const cocokJam = jadwal.jam === jamNow;
+    const bellKey = `${jadwal.hari}-${jadwal.tanggal || "ALL"}-${jadwal.jam}`;
+
+    if (cocokHari && cocokTanggal && cocokJam && lastBellKey !== bellKey) {
+      lastBellKey = bellKey;
+
+      const jumlahBunyi = getBellCount(jadwal.kegiatan);
+
+      mqttClient.publish(
+        topicBell,
+        JSON.stringify({
+          type: "BELL",
+          count: jumlahBunyi
+        })
+      );
+
+      console.log("🔔 Kirim BEL:", jadwal.kegiatan, jumlahBunyi);
+    }
+  });
+}, 1000);
+
+
+function getBellCount(kegiatan) {
+  const teks = kegiatan.toLowerCase();
+
+  if (teks.includes("masuk")) return 3;
+  if (teks.includes("pergantian")) return 1;
+  if (teks.includes("istirahat")) return 2;
+  if (teks.includes("pulang")) return 4;
+
+  // kegiatan custom (ketik sendiri)
+  return 3;
+}
+
 /* ================= MQTT WEB STATUS ================= */
+
 
 let espOnline = false;
 let mqttConnected = false;
@@ -477,6 +648,7 @@ mqttClient.on("offline", () => {
   updateSystemUI();
 });
 
+setInterval(updateNextBell, 60000); // update tiap 1 menit
 
 </script>
 
