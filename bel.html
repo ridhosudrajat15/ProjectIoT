@@ -239,6 +239,20 @@ footer {
 <h2>Pengaturan Jadwal Bel</h2>
 <div class="cyber-line"></div>
 
+<!-- STATUS ESP & MQTT -->
+<div class="card">
+  <h3 style="margin-bottom:10px; color:#00eaff;">Status Sistem</h3>
+
+  <div class="alarm-status off" id="espStatus">
+    ESP32: Mengecek ESP...
+  </div>
+
+  <div class="alarm-status off" id="mqttStatus">
+    MQTT: Menghubungkan MQTT...
+  </div>
+</div>
+
+
 <!-- FORM -->
 <div class="card">
   <label>Hari:</label>
@@ -291,6 +305,8 @@ footer {
 </main>
 
 <footer>© 2025 Smart IoT Futuristic UI</footer>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script>
 function toggleMenu() {
@@ -384,9 +400,87 @@ function tampilkanData() {
       </tr>
     `;
   });
+  
 }
+
+/* ================= MQTT WEB STATUS ================= */
+
+let espOnline = false;
+let mqttConnected = false;
+
+const broker = "wss://broker.hivemq.com:8884/mqtt";
+const options = {
+  clean: true,
+  connectTimeout: 4000,
+  clientId: "WEB_BEL_" + Math.random().toString(16).substr(2, 8)
+};
+
+const mqttClient = mqtt.connect(broker, options);
+
+const espStatusEl = document.getElementById("espStatus");
+const mqttStatusEl = document.getElementById("mqttStatus");
+function updateSystemUI() {
+  const controls = document.querySelectorAll(
+    "button, input, select"
+  );
+
+  if (!espOnline) {
+    espStatusEl.textContent = "ESP 32: OFFLINE";
+    espStatusEl.className = "alarm-status off";
+
+    mqttStatusEl.textContent = "MQTT: Menunggu ESP";
+    mqttStatusEl.className = "alarm-status off";
+
+    controls.forEach(el => el.disabled = true);
+  } else {
+    espStatusEl.textContent = "ESP 32: ONLINE";
+    espStatusEl.className = "alarm-status on";
+
+    mqttStatusEl.textContent = mqttConnected
+      ? "MQTT: TERHUBUNG"
+      : "MQTT: Menghubungkan...";
+    mqttStatusEl.className = mqttConnected
+      ? "alarm-status on"
+      : "alarm-status off";
+
+    controls.forEach(el => el.disabled = false);
+  }
+}
+
+mqttClient.on("connect", () => {
+  console.log("MQTT Web Connected");
+  mqttConnected = true;
+
+  mqttClient.subscribe("sekolah/bel/status/esp");
+
+  updateSystemUI();
+});
+
+
+mqttClient.on("message", (topic, message) => {
+  const payload = message.toString();
+
+  if (topic === "sekolah/bel/status/esp") {
+    espOnline = payload === "ONLINE";
+    updateSystemUI();
+  }
+});
+
+
+mqttClient.on("reconnect", () => {
+  mqttStatusEl.textContent = "MQTT: Menghubungkan ulang...";
+  mqttStatusEl.className = "alarm-status off";
+});
+
+mqttClient.on("offline", () => {
+  mqttConnected = false;
+  updateSystemUI();
+});
+
+
 </script>
 
 </body>
 </html>
+
 
