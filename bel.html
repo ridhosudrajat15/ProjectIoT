@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,264 +8,377 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
 
-  body {
-    height:100vh; display:flex; flex-direction:column;
-    background: radial-gradient(circle at top, #042a52, #020b14);
-    overflow:hidden;
-    color:white;
-  }
+body{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:radial-gradient(circle at top,#042a52,#020b14);
+  color:white;
+  overflow:hidden;
+}
 
- /* HEADER FIXED */
-header {
-  position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px; font-weight:600; letter-spacing:1px;
-  background: rgba(15, 30, 60, 0.75);
-  border-bottom: 1px solid rgba(0,255,255,0.2);
-  text-shadow: 0 0 8px #00eaff;
-  box-shadow: 0 2px 8px rgba(0,255,255,0.12);
-  z-index: 20;
+/* HEADER */
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(15,30,60,0.75);
+  border-bottom:1px solid rgba(0,255,255,0.2);
+  text-shadow:0 0 8px #00eaff;
+  box-shadow:0 2px 8px rgba(0,255,255,0.12);
+  font-size:20px;
+  font-weight:600;
+  z-index:20;
 }
 
 /* HAMBURGER */
-.hamburger {
-  position:absolute; left:15px; cursor:pointer;
-  width:28px; height:22px; display:flex; flex-direction:column;
-  justify-content:space-between; align-items:center;
+.hamburger{
+  position:absolute;
+  left:15px;
+  width:28px;
+  height:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
 }
-.hamburger span {
-  width:100%; height:3px; background:#00eaff;
-  border-radius:5px; box-shadow:0 0 6px #00eaff;
-  transition:0.3s;
+
+.hamburger span{
+  width:100%;
+  height:3px;
+  background:#00eaff;
+  border-radius:5px;
+  box-shadow:0 0 6px #00eaff;
 }
 
 /* SIDEBAR */
-.sidebar {
-  position:fixed; top:0; left:-250px; width:230px; height:100vh;
-  background:rgba(3, 17, 30, 0.95);
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-250px;
+  width:230px;
+  height:100vh;
+  background:rgba(3,17,30,0.95);
   border-right:1px solid rgba(0,255,255,0.25);
-  box-shadow:2px 0 10px rgba(0,255,255,0.3);
-  padding-top:70px; transition:0.35s; z-index:21;
+  padding-top:70px;
+  transition:0.3s;
+  z-index:21;
 }
-.sidebar-title {
-  color:#00eaff; font-size:16px; font-weight:700;
-  padding:10px 20px 12px; border-bottom:1px solid rgba(0,255,255,0.25);
-  margin-bottom:10px; letter-spacing:1px;
+
+.sidebar-title{
+  color:#00eaff;
+  font-size:16px;
+  font-weight:700;
+  padding:10px 20px;
+  border-bottom:1px solid rgba(0,255,255,0.25);
 }
-.sidebar a {
-  display:block; padding:14px 20px; font-size:14px;
-  color:#00eaff; text-decoration:none; font-weight:500;
+
+.sidebar a{
+  display:block;
+  padding:14px 20px;
+  color:#00eaff;
+  text-decoration:none;
   transition:0.25s;
 }
-.sidebar a:hover {
+
+.sidebar a:hover{
   background:rgba(0,255,255,0.1);
   border-left:4px solid #00eaff;
-  text-shadow:0 0 8px #00eaff;
 }
 
 /* OVERLAY */
-.overlay {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
-  opacity:0; visibility:hidden; transition:0.3s; z-index:19;
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  opacity:0;
+  visibility:hidden;
+  transition:0.3s;
+  z-index:19;
 }
-.overlay.active { opacity:1; visibility:visible; }
 
-/* MAIN SCROLL ONLY */
-main {
-  margin-top:60px; margin-bottom:50px; padding:15px;
-  overflow-y:auto; flex:1;
+.overlay.active{
+  opacity:1;
+  visibility:visible;
 }
-h2 {
-  text-align:center; font-size:26px; font-weight:700;
-  text-shadow:0 0 12px #00eaff; margin-bottom:10px;
+
+/* MAIN */
+main{
+  flex:1;
+  margin-top:60px;
+  margin-bottom:50px;
+  padding:15px;
+  overflow-y:auto;
 }
-.cyber-line {
-  width:150px; height:3px; background:linear-gradient(90deg, transparent, #00eaff, transparent);
-  margin:10px auto 20px; border-radius:5px; box-shadow:0 0 10px #00eaff;
+
+h2{
+  text-align:center;
+  font-size:26px;
+  text-shadow:0 0 12px #00eaff;
+  margin-bottom:10px;
+}
+
+.cyber-line{
+  width:150px;
+  height:3px;
+  background:linear-gradient(90deg,transparent,#00eaff,transparent);
+  margin:10px auto 20px;
+  border-radius:5px;
+  box-shadow:0 0 10px #00eaff;
 }
 
 /* CARD */
-.card {
+.card{
   background:rgba(0,255,255,0.06);
   border:1px solid rgba(0,255,255,0.25);
   box-shadow:0 0 10px rgba(0,255,255,0.3);
-  padding:15px; border-radius:10px; margin-bottom:20px;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
 }
 
-/* FORM INPUT */
-input, select {
-  width:100%; padding:10px; margin:8px 0;
-  background:rgba(10,40,60,0.7); border:1px solid #00eaff;
-  border-radius:8px; color:#00eaff; font-weight:600;
+/* FORM */
+input,
+select{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  background:rgba(10,40,60,0.7);
+  border:1px solid #00eaff;
+  border-radius:8px;
+  color:#00eaff;
+  font-weight:600;
 }
-.btn-add {
-  margin-top:10px; padding:10px 20px; width:100%;
-  background:#00eaff; border:none; cursor:pointer;
-  font-weight:700; border-radius:8px; color:#00151e;
+
+.btn-add{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#00eaff;
+  color:#00151e;
+  font-weight:700;
+  cursor:pointer;
   box-shadow:0 0 15px #00eaff;
   transition:0.25s;
 }
-.btn-add:hover { transform:scale(1.05); }
 
-/* RESPONSIVE TABLE WRAPPER */
-.table-wrap {
-  width:100%; overflow-x:auto;
-  border-radius:10px;
+.btn-add:hover{
+  transform:scale(1.03);
 }
-table {
-  width:100%; border-collapse:collapse; min-width:480px;
+
+/* TABLE */
+.table-wrap{
+  overflow-x:auto;
 }
-th, td {
-  padding:10px; text-align:center;
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:500px;
+}
+
+th,td{
+  padding:10px;
+  text-align:center;
   border-bottom:1px solid rgba(0,255,255,0.2);
   font-size:13px;
 }
-.btn-del {
-  padding:5px 10px; background:#ff1744; border:none;
-  border-radius:6px; cursor:pointer; color:white;
-  font-weight:600; box-shadow:0 0 8px #ff1744;
-  transition:0.25s; font-size:12px;
-}
-.btn-del:hover { transform:scale(1.05); }
 
-/* FOOTER FIXED */
-footer {
-  position: fixed; bottom: 0; left: 0; width: 100%; height: 45px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; opacity:0.8;
-  background: rgba(15, 30, 60, 0.75);
-  border-top: 1px solid rgba(0,255,255,0.2);
-  box-shadow: 0 -2px 8px rgba(0,255,255,0.12);
-  z-index: 20;
+.btn-del{
+  padding:5px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+  font-size:12px;
+  font-weight:600;
 }
 
-/* ROW */
-.alarm-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
+.btn-hapus{
+  background:#ff1744;
+  box-shadow:0 0 8px #ff1744;
 }
 
-/* TOGGLE */
-.toggle-wrap {
-  position: relative;
-  width: 42px;
-  height: 22px;
+.btn-edit{
+  background:#ffc400;
+  color:black;
+  box-shadow:0 0 8px #ffc400;
 }
 
-.toggle-wrap input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+/* FOOTER */
+footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:45px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(15,30,60,0.75);
+  border-top:1px solid rgba(0,255,255,0.2);
+  font-size:12px;
 }
 
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: #555;
-  border-radius: 20px;
-  transition: 0.3s;
-  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+.system-title{
+  color:#00eaff;
+  margin-bottom:12px;
+  text-shadow:0 0 8px #00eaff;
 }
 
-.toggle-slider::before {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 2px;
-  top: 2px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
+.status-item{
+  margin:8px 0;
+  font-size:15px;
+  font-weight:500;
 }
 
-/* ON */
-.toggle-wrap input:checked + .toggle-slider {
-  background: #00eaff;
-  box-shadow: 0 0 12px #00eaff;
+.system-title{
+  color:#00eaff;
+  margin-bottom:8px;
+  text-shadow:0 0 8px #00eaff;
 }
 
-.toggle-wrap input:checked + .toggle-slider::before {
-  transform: translateX(20px);
-}
-
-/* LABEL */
-.alarm-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #00eaff;
-}
-
-/* STATUS */
-.alarm-status {
-  font-size: 12px;
-  margin-top: 6px;
-  font-weight: 600;
-}
-
-.alarm-status.off { color: #ff4d4d; }
-.alarm-status.on  { color: #00ff9c; }
-
-/* ================= LCD DISPLAY ================= */
-.lcd-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.lcd-display {
-  width: 100%;
-  max-width: 360px;
-  height: 120px;
-  padding: 12px 16px;
-
-  background-image: url("lcd1.png"); /* ← INI YANG PENTING */
-  background-size: cover;
-  background-position: center;
-
-  border-radius: 8px;
-  border: 2px solid #00eaff;
-
+.system-divider{
+  width:100%;
+  height:2px;
+  margin-bottom:12px;
+  background:#00eaff;
   box-shadow:
-    inset 0 0 20px rgba(0,255,255,0.35),
-    0 0 20px rgba(0,255,255,0.45);
-
-  color: #00ff9c;
-  text-align: center;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    0 0 5px #00eaff,
+    0 0 10px #00eaff,
+    0 0 15px #00eaff;
+  border-radius:10px;
 }
 
-.lcd-title {
-  font-size: 12px;
+.status-item{
+  margin:8px 0;
+  font-size:15px;
+  font-weight:500;
+}
+
+#liveClock {
+  color: #00ff66;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #00eaff;
-  margin-bottom: 6px;
-  text-shadow: 0 0 6px #00eaff;
+  text-shadow: 0 0 10px #00ff66;
+}
+.status-menunggu{
+  color:#ffc107;
+  font-weight:700;
 }
 
-.lcd-text {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-shadow: 0 0 8px #00ff9c;
+.status-berlangsung{
+  color:#00eaff;
+  font-weight:700;
 }
 
-.lcd-time {
-  font-size: 14px;
-  margin-top: 4px;
-  color: #7fffe5;
+.status-selesai{
+  color:#00ff66;
+  font-weight:700;
 }
 
+.wifi-icon{
+  position:absolute;
+  right:15px;
+  cursor:pointer;
+  font-size:22px;
+  color:#00eaff;
+  transition:.3s;
+}
+
+.wifi-icon:hover{
+  color:#ff5252;
+  transform:scale(1.15);
+}
+
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:.3s;
+  z-index:50;
+}
+
+.modal-overlay.active{
+  opacity:1;
+  visibility:visible;
+}
+
+.modal-box{
+  width:320px;
+  background:rgba(10,25,45,.95);
+  border:2px solid #00eaff;
+  border-radius:14px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(0,234,255,.3);
+}
+
+.modal-box h3{
+  color:#00eaff;
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  margin-bottom:15px;
+}
+
+.modal-box input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:2px solid #00eaff;
+  background:transparent;
+  color:#00eaff;
+  text-align:center;
+  outline:none;
+  margin-bottom:15px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+}
+
+.modal-actions button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.btn-cancel{
+  background:#ff1744;
+  color:white;
+}
+
+.btn-confirm{
+  background:#00ff66;
+  color:black;
+  font-weight:700;
+}
 
 </style>
 </head>
@@ -274,163 +386,391 @@ footer {
 <body>
 
 <header>
+
   <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
+
   BEL OTOMATIS
+
+  <div
+    class="wifi-icon"
+    onclick="resetWiFi()"
+    title="Reset WiFi ESP">
+
+    🛜
+
+  </div>
+
 </header>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-title">MENU</div>
+
   <a href="index.html">Beranda</a>
-  <a href="dasboard.html">Dashboard</a>
+  <a href="dashboard.html">Dashboard</a>
   <a href="lampu.html">Kontrol Lampu</a>
   <a href="bel.html">Jadwal Bel</a>
 </div>
 
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
+<!-- MODAL RESET WIFI -->
+
+<div class="modal-overlay" id="wifiModal">
+
+  <div class="modal-box">
+
+    <h3>Reset WiFi ESP</h3>
+
+    <p>
+      ESP akan restart dan masuk mode setup.
+      <br>
+      Masukkan password:
+    </p>
+
+    <input
+      type="password"
+      id="wifiPin"
+      placeholder="Masukkan Password">
+
+    <div class="modal-actions">
+
+      <button
+        class="btn-cancel"
+        onclick="closeWifiModal()">
+
+        Batal
+
+      </button>
+
+      <button
+        class="btn-confirm"
+        onclick="confirmResetWiFi()">
+
+        Reset
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div
+  class="modal-overlay"
+  id="wifiSuccessModal">
+
+  <div class="modal-box">
+
+    <h3>✅ Reset Berhasil</h3>
+
+    <p>
+
+      ESP akan restart.
+
+      <br><br>
+
+      MASUK KE WIFI
+      <br><br>
+
+      <b>ESP32-BEL-SETUP</b>
+
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        class="btn-confirm"
+        onclick="closeWifiSuccessModal()">
+
+        OK
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
 <main>
 
 <h2>Pengaturan Jadwal Bel</h2>
 <div class="cyber-line"></div>
 
-<!-- STATUS ESP & MQTT -->
-<div class="card">
-  <h3 style="margin-bottom:10px; color:#00eaff;">Status Sistem</h3>
+  <div class="card">
 
-  <div class="alarm-status off" id="espStatus">
-    ESP32: Mengecek ESP...
+  <h3 class="system-title">
+    Status System
+  </h3>
+
+  <div class="system-divider"></div>
+
+  <div class="status-item">
+    Status ESP :
+    <span id="espStatus" class="status-offline">
+      Tidak Aktif
+    </span>
   </div>
 
-  <div class="alarm-status off" id="mqttStatus">
-    MQTT: Menghubungkan MQTT...
-  </div>
+  <div class="status-item">
+  Jam :
+  <span id="liveClock">
+    00:00:00
+  </span>
 </div>
-
-<!-- NEXT BELL -->
-<div class="card">
-  <div class="lcd-wrapper">
-    <div class="lcd-display">
-      <div class="lcd-title">🔔 BELL SELANJUTNYA</div>
-      <div class="lcd-text" id="nextBellText">
-        Memuat jadwal...
-      </div>
-      <div class="lcd-time" id="nextBellTime"></div>
-    </div>
-  </div>
 </div>
-
-
 <!-- FORM -->
 <div class="card">
-  <label>Hari:</label>
-  <select id="hari">
-    <option value="">Pilih Hari</option>
-    <option>Senin</option><option>Selasa</option><option>Rabu</option>
-    <option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option>
-  </select>
 
-  <label>Tanggal (Opsional):</label>
-  <input type="date" id="tanggalBel">
+<label>Hari:</label>
+<select id="hari">
+  <option value="">Pilih Hari</option>
+  <option>Senin</option>
+  <option>Selasa</option>
+  <option>Rabu</option>
+  <option>Kamis</option>
+  <option>Jumat</option>
+  <option>Sabtu</option>
+  <option>Minggu</option>
+</select>
 
-  <label>Jam Bel:</label>
-  <input type="time" id="jamBel">
+<label>Tanggal:</label>
+<input type="date" id="tanggalBel">
 
-  <label>Kegiatan:</label>
-  <select id="preset">
-    <option value="">Pilih Kegiatan</option>
-    <option>Masuk </option>
-    <option>Pergantian Jam Pelajaran</option>
-    <option>Istirahat</option>
-    <option>Pulang Sekolah</option>
+<label>Jam Bel:</label>
+<input type="time" id="jamBel">
 
-  </select>
-  <input type="text" id="namaKegiatan" placeholder="Atau ketik sendiri...">
+<label>Kegiatan:</label>
+<select id="preset">
+  <option value="">Pilih Kegiatan</option>
+  <option>Masuk</option>
+  <option>Pergantian Jam Pelajaran</option>
+  <option>Istirahat</option>
+  <option>Pulang Sekolah</option>
+</select>
 
-  <button class="btn-add" onclick="tambahJadwal()">+ Tambahkan Jadwal</button>
-  <div class="alarm-row">
-  <label class="toggle-wrap">
-    <input type="checkbox" id="mq2Toggle" onchange="toggleMQ2(this)">
-    <span class="toggle-slider"></span>
-  </label>
+<input type="text" id="namaKegiatan" placeholder="Atau ketik sendiri...">
 
-  <span class="alarm-label">Alarm Darurat</span>
-</div>
-
-<div id="alarmStatus" class="alarm-status off">
-  Status: NONAKTIF
-</div>
+<button class="btn-add" onclick="tambahJadwal()">
+  + Tambahkan Jadwal
+</button>
 
 </div>
 
 <!-- TABLE -->
 <div class="card table-wrap">
-  <table id="tabelJadwal">
-    <tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Kegiatan</th><th>Aksi</th></tr>
-  </table>
+<table id="tabelJadwal">
+  <tr>
+<th>Hari</th>
+<th>Tanggal</th>
+<th>Jam</th>
+<th>Kegiatan</th>
+<th>Status</th>
+<th>Aksi</th>
+  </tr>
+</table>
 </div>
 
 </main>
 
-<footer>© 2025 Smart IoT Futuristic UI</footer>
-
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<footer>
+© 2026 Smart IoT Futuristic UI
+</footer>
 
 <script>
 function toggleMenu() {
   let sidebar = document.getElementById("sidebar");
   let overlay = document.getElementById("overlay");
+
   if (sidebar.style.left === "0px") {
-    sidebar.style.left = "-250px"; overlay.classList.remove("active");
+    sidebar.style.left = "-250px";
+    overlay.classList.remove("active");
   } else {
-    sidebar.style.left = "0px"; overlay.classList.add("active");
+    sidebar.style.left = "0px";
+    overlay.classList.add("active");
   }
 }
 
-/* ===================== LOCALSTORAGE SYSTEM ===================== */
-const topicBell = "sekolah/bel/control";
-
+/* DATA */
 let jadwalBel = JSON.parse(localStorage.getItem("jadwalBel") || "[]");
-let editIndex = -1; // ID untuk edit
+let editIndex = -1;
 
-window.onload = () => {
-  tampilkanData();
-  updateNextBell();
-};
 
+window.onload = tampilkanData;
 
 function tambahJadwal() {
+
   let hari = document.getElementById("hari").value;
   let tanggal = document.getElementById("tanggalBel").value;
   let jam = document.getElementById("jamBel").value;
+
   let preset = document.getElementById("preset").value;
   let manual = document.getElementById("namaKegiatan").value;
+
   let kegiatan = manual !== "" ? manual : preset;
 
-  if (hari === "" || jam === "" || kegiatan === "") {
-    alert("⚠ Harap isi minimal: Hari, Jam, dan Kegiatan!");
+  if(hari === "" || jam === "" || kegiatan === ""){
+    alert("Harap isi Hari, Jam, dan Kegiatan!");
     return;
   }
 
-  let data = { hari, tanggal, jam, kegiatan };
+  let data = {
+  hari,
+  tanggal,
+  jam,
+  kegiatan,
+  status: "Menunggu"
+};
 
-  if (editIndex === -1) {
+  if(editIndex === -1){
     jadwalBel.push(data);
   } else {
     jadwalBel[editIndex] = data;
     editIndex = -1;
-    document.querySelector(".btn-add").innerText = "+ Tambahkan Jadwal";
+    document.querySelector(".btn-add").innerText =
+      "+ Tambahkan Jadwal";
   }
 
-  localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
-tampilkanData();
-updateNextBell();
-resetForm();
+  localStorage.setItem(
+  "jadwalBel",
+  JSON.stringify(jadwalBel)
+);
+  console.log(
+    "KIRIM MQTT:",
+    JSON.stringify(jadwalBel)
+  );
+// kirim ke ESP32 via MQTT
+// kirim ke ESP32 via MQTT (UPDATE DATA)
+if (mqttClient.connected) {
+
+  let payload = {
+    action: "update",
+    data: jadwalBel
+};
+
+  mqttClient.publish(
+    TOPIC_JADWAL,
+    JSON.stringify(payload)
+  );
+}
+
+  tampilkanData();
+  resetForm();
 
 }
 
-function resetForm() {
+function tampilkanData(){
+
+  let tabel = document.getElementById("tabelJadwal");
+
+  tabel.innerHTML = `
+    <tr>
+      <th>Hari</th>
+      <th>Tanggal</th>
+      <th>Jam</th>
+      <th>Kegiatan</th>
+      <th>Status</th>
+      <th>Aksi</th>
+    </tr>
+  `;
+
+  jadwalBel.forEach((data,i)=>{
+   
+  let warnaStatus = "";
+
+  if(data.status === "Menunggu"){
+    warnaStatus = "status-menunggu";
+  }
+  else if(data.status === "Berlangsung"){
+    warnaStatus = "status-berlangsung";
+  }
+  else if(data.status === "Selesai"){
+    warnaStatus = "status-selesai";
+  }
+
+    tabel.innerHTML += `
+      <tr>
+        <td>${data.hari}</td>
+        <td>${data.tanggal || "-"}</td>
+        <td>${data.jam}</td>
+        <td>${data.kegiatan}</td>
+
+<td class="${warnaStatus}">
+  ${data.status || "Menunggu"}
+</td>
+
+<td>
+          <button class="btn-del btn-hapus"
+          onclick="hapusJadwal(${i})">
+          Hapus
+          </button>
+
+          <button class="btn-del btn-edit"
+          onclick="editJadwal(${i})">
+          Edit
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function hapusJadwal(index){
+
+  if(confirm("Yakin ingin menghapus jadwal?")){
+
+   jadwalBel.splice(index,1);
+
+// kirim ke ESP32 (DELETE UPDATE)
+if (mqttClient.connected) {
+
+  let payload = {
+    action: "update",
+    data: jadwalBel,
+    info: "deleted"
+};
+
+  mqttClient.publish(
+    TOPIC_JADWAL,
+    JSON.stringify(payload)
+  );
+}
+
+    localStorage.setItem(
+      "jadwalBel",
+      JSON.stringify(jadwalBel)
+    );
+
+    tampilkanData();
+
+  }
+}
+
+function editJadwal(index){
+
+  let data = jadwalBel[index];
+
+  document.getElementById("hari").value = data.hari;
+  document.getElementById("tanggalBel").value = data.tanggal;
+  document.getElementById("jamBel").value = data.jam;
+  document.getElementById("namaKegiatan").value = data.kegiatan;
+
+  document.getElementById("preset").value = "";
+
+  editIndex = index;
+
+
+  document.querySelector(".btn-add").innerText =
+    "✔ Simpan Perubahan";
+}
+
+function resetForm(){
+
   document.getElementById("hari").value = "";
   document.getElementById("tanggalBel").value = "";
   document.getElementById("jamBel").value = "";
@@ -438,221 +778,208 @@ function resetForm() {
   document.getElementById("namaKegiatan").value = "";
 }
 
-function editJadwal(index) {
-  let data = jadwalBel[index];
+const WIFI_RESET_PIN = "1234";
 
-  document.getElementById("hari").value = data.hari;
-  document.getElementById("tanggalBel").value = data.tanggal;
-  document.getElementById("jamBel").value = data.jam;
-  document.getElementById("namaKegiatan").value = data.kegiatan;
-  document.getElementById("preset").value = "";
+function resetWiFi(){
 
-  editIndex = index;
-  document.querySelector(".btn-add").innerText = "✔ Simpan Perubahan";
+  document
+    .getElementById("wifiModal")
+    .classList.add("active");
+
+  document
+    .getElementById("wifiPin")
+    .value = "";
 }
 
-function hapusJadwal(index) {
-  if (confirm("Yakin ingin menghapus jadwal bel ini?")) {
-    jadwalBel.splice(index, 1);
-    localStorage.setItem("jadwalBel", JSON.stringify(jadwalBel));
-    tampilkanData();
-    updateNextBell();
+function closeWifiModal(){
 
-  }
+  document
+    .getElementById("wifiModal")
+    .classList.remove("active");
 }
 
-function tampilkanData() {
-  let tabel = document.getElementById("tabelJadwal");
-  tabel.innerHTML = `<tr><th>Hari</th><th>Tanggal</th><th>Jam</th><th>Kegiatan</th><th>Aksi</th></tr>`;
+function confirmResetWiFi(){
 
-  jadwalBel.forEach((data, i) => {
-    tabel.innerHTML += `
-      <tr>
-        <td>${data.hari}</td>
-        <td>${data.tanggal === "" ? "-" : data.tanggal}</td>
-        <td>${data.jam}</td>
-        <td>${data.kegiatan}</td>
-        <td>
-          <button class="btn-del" onclick="hapusJadwal(${i})">Hapus</button>
-          <button class="btn-del" style="background:#ffc400; box-shadow:0 0 8px #ffc400;" onclick="editJadwal(${i})">Edit</button>
-        </td>
-      </tr>
-    `;
-  });
-  
-}
+  const pin =
+    document.getElementById("wifiPin").value;
 
-function updateNextBell() {
-  const now = new Date();
-  const hariNow = now.toLocaleDateString("id-ID", { weekday: "long" });
-  const tanggalNow = now.toISOString().slice(0, 10);
-  const jamNow = now.toTimeString().slice(0, 5);
+  if(pin !== WIFI_RESET_PIN){
 
-  let kandidat = [];
+    alert("Password salah!");
 
-  jadwalBel.forEach(j => {
-    const cocokHari = j.hari === hariNow;
-    const cocokTanggal = j.tanggal === "" || j.tanggal === tanggalNow;
-
-    if (!cocokHari || !cocokTanggal) return;
-
-    if (j.jam > jamNow) {
-      kandidat.push(j);
-    }
-  });
-
-  kandidat.sort((a, b) => a.jam.localeCompare(b.jam));
-
-  const el = document.getElementById("nextBellText");
-const timeEl = document.getElementById("nextBellTime");
-
-if (kandidat.length === 0) {
-  el.textContent = "-";
-  timeEl.textContent = "";
-  el.style.color = "#ff4d4d";
-} else {
-  const next = kandidat[0];
-  el.textContent = next.kegiatan.toUpperCase();
-  timeEl.textContent = "⏰ " + next.jam;
-  el.style.color = "#00ff9c";
-}
-
-}
-
-
-let lastBellKey = "";
-let lastMinute = "";
-
-setInterval(() => {
-  if (!espOnline || !mqttConnected) return;
-
-  const now = new Date();
-  const hariNow = now.toLocaleDateString("id-ID", { weekday: "long" });
-  const tanggalNow = now.toISOString().slice(0, 10);
-  const jamNow = now.toTimeString().slice(0, 5);
-
-  if (jamNow !== lastMinute) {
-    lastBellKey = "";
-    lastMinute = jamNow;
+    return;
   }
 
-  jadwalBel.forEach(jadwal => {
-    const cocokHari = jadwal.hari === hariNow;
-    const cocokTanggal = jadwal.tanggal === "" || jadwal.tanggal === tanggalNow;
-    const cocokJam = jadwal.jam === jamNow;
-    const bellKey = `${jadwal.hari}-${jadwal.tanggal || "ALL"}-${jadwal.jam}`;
-
-    if (cocokHari && cocokTanggal && cocokJam && lastBellKey !== bellKey) {
-      lastBellKey = bellKey;
-
-      const jumlahBunyi = getBellCount(jadwal.kegiatan);
-
-      mqttClient.publish(
-        topicBell,
-        JSON.stringify({
-          type: "BELL",
-          count: jumlahBunyi
-        })
-      );
-
-      console.log("🔔 Kirim BEL:", jadwal.kegiatan, jumlahBunyi);
-    }
-  });
-}, 1000);
-
-
-function getBellCount(kegiatan) {
-  const teks = kegiatan.toLowerCase();
-
-  if (teks.includes("masuk")) return 3;
-  if (teks.includes("pergantian")) return 1;
-  if (teks.includes("istirahat")) return 2;
-  if (teks.includes("pulang")) return 4;
-
-  // kegiatan custom (ketik sendiri)
-  return 3;
-}
-
-/* ================= MQTT WEB STATUS ================= */
-
-
-let espOnline = false;
-let mqttConnected = false;
-
-const broker = "wss://broker.hivemq.com:8884/mqtt";
-const options = {
-  clean: true,
-  connectTimeout: 4000,
-  clientId: "WEB_BEL_" + Math.random().toString(16).substr(2, 8)
-};
-
-const mqttClient = mqtt.connect(broker, options);
-
-const espStatusEl = document.getElementById("espStatus");
-const mqttStatusEl = document.getElementById("mqttStatus");
-function updateSystemUI() {
-  const controls = document.querySelectorAll(
-    "button, input, select"
+  mqttClient.publish(
+    "sekolah/bel/wifiReset",
+    "RESET"
   );
 
-  if (!espOnline) {
-    espStatusEl.textContent = "ESP 32: OFFLINE";
-    espStatusEl.className = "alarm-status off";
+  closeWifiModal();
 
-    mqttStatusEl.textContent = "MQTT: Menunggu ESP";
-    mqttStatusEl.className = "alarm-status off";
-
-    controls.forEach(el => el.disabled = true);
-  } else {
-    espStatusEl.textContent = "ESP 32: ONLINE";
-    espStatusEl.className = "alarm-status on";
-
-    mqttStatusEl.textContent = mqttConnected
-      ? "MQTT: TERHUBUNG"
-      : "MQTT: Menghubungkan...";
-    mqttStatusEl.className = mqttConnected
-      ? "alarm-status on"
-      : "alarm-status off";
-
-    controls.forEach(el => el.disabled = false);
-  }
+  showWifiSuccessModal();
 }
 
+function showWifiSuccessModal(){
+
+  document
+    .getElementById("wifiSuccessModal")
+    .classList.add("active");
+}
+
+function closeWifiSuccessModal(){
+
+  document
+    .getElementById("wifiSuccessModal")
+    .classList.remove("active");
+}
+
+function updateClock() {
+  const now = new Date();
+
+  const jam = String(now.getHours()).padStart(2, '0');
+  const menit = String(now.getMinutes()).padStart(2, '0');
+  const detik = String(now.getSeconds()).padStart(2, '0');
+
+  document.getElementById("liveClock").innerText =
+    `${jam}:${menit}:${detik}`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+enableForm(false);
+</script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+
+
+const TOPIC_WIFI_RESET ="sekolah/bel/wifiReset";
+const TOPIC_JADWAL = "sekolah/bel/jadwal/update";
+/* STATUS ESP32 */
+
+const mqttClient = mqtt.connect(
+  'wss://broker.hivemq.com:8884/mqtt'
+);
+
+const espStatus =
+document.getElementById("espStatus");
+
 mqttClient.on("connect", () => {
-  console.log("MQTT Web Connected");
-  mqttConnected = true;
 
-  mqttClient.subscribe("sekolah/bel/status/esp");
+  console.log("MQTT Connected");
 
-  updateSystemUI();
+  mqttClient.subscribe(
+  "sekolah/bel/status/esp"
+);
+
+mqttClient.subscribe(
+  "sekolah/bel/status/jadwal"
+);
+
+  mqttClient.publish(
+    "sekolah/bel/status/request",
+    "GET_STATUS"
+  );
+
+  mqttClient.subscribe(
+  "sekolah/bel/jadwal/sync"
+);
+
+mqttClient.publish(
+  "sekolah/bel/jadwal/request",
+  "GET_DATA"
+);
+
 });
 
+function enableForm(enable){
 
+  document.getElementById("hari").disabled = !enable;
+  document.getElementById("tanggalBel").disabled = !enable;
+  document.getElementById("jamBel").disabled = !enable;
+  document.getElementById("preset").disabled = !enable;
+  document.getElementById("namaKegiatan").disabled = !enable;
+
+  const btn =
+    document.querySelector(".btn-add");
+
+  btn.disabled = !enable;
+
+  btn.style.opacity =
+    enable ? "1" : "0.4";
+
+  btn.style.cursor =
+    enable ? "pointer" : "not-allowed";
+}
+
+let lastUpdate = Date.now();
 mqttClient.on("message", (topic, message) => {
-  const payload = message.toString();
 
-  if (topic === "sekolah/bel/status/esp") {
-    espOnline = payload === "ONLINE";
-    updateSystemUI();
+  let data = message.toString();
+
+  console.log("STATUS:", topic, data);
+
+  if(topic === "sekolah/bel/status/esp"){
+
+    lastUpdate = Date.now(); // reset timer tiap ada pesan
+
+    if(data === "ONLINE"){
+      espStatus.innerHTML = "AKTIF";
+      espStatus.style.color = "#00ff66";
+      espStatus.style.textShadow = "0 0 10px #00ff66";
+
+      enableForm(true);
+    }
+
+    if(data === "OFFLINE"){
+      espStatus.innerHTML = "TIDAK AKTIF";
+      espStatus.style.color = "red";
+      espStatus.style.textShadow = "0 0 10px red";
+
+      enableForm(false);
+    }
+
   }
+
+  if(topic === "sekolah/bel/jadwal/sync"){
+
+  console.log(
+  "DATA DARI ESP:",
+  message.toString()
+);
+
+  let dataSync =
+    JSON.parse(message.toString());
+
+  jadwalBel =
+    dataSync.data || [];
+
+  localStorage.setItem(
+    "jadwalBel",
+    JSON.stringify(jadwalBel)
+  );
+
+  tampilkanData();
+
+  console.log(
+    "Jadwal berhasil disinkronkan"
+  );
+}
 });
 
+setInterval(() => {
 
-mqttClient.on("reconnect", () => {
-  mqttStatusEl.textContent = "MQTT: Menghubungkan ulang...";
-  mqttStatusEl.className = "alarm-status off";
-});
+  if(Date.now() - lastUpdate > 5000){ // 8 detik tidak ada update
 
-mqttClient.on("offline", () => {
-  mqttConnected = false;
-  updateSystemUI();
-});
+    espStatus.innerHTML = "TIDAK AKTIF";
+    espStatus.style.color = "red";
+    espStatus.style.textShadow = "0 0 10px red";
 
-setInterval(updateNextBell, 60000); // update tiap 1 menit
+    enableForm(false);
+  }
+
+}, 2000);
 
 </script>
-
 </body>
 </html>
-
-
