@@ -126,7 +126,7 @@ h1 {
   justify-content:center;
 }
 .menu-card {
-  width:220px; height:120px;
+  width:260px; height:140px;
   background:rgba(0,255,255,0.05);
   border:1px solid #00eaff;
   border-radius:12px;
@@ -171,20 +171,18 @@ footer {
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-title">MENU</div>
-  <a href="index.html">Beranda</a>
-  <a href="dashboard.html">Dashboard</a>
+  <a href="index.html" onclick="sessionStorage.removeItem('isLogin'); toggleMenu()">Beranda</a>
 </div>
 
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <main>
-  <h1>Pilih Sistem</h1>
+  <h1>Bell Control System</h1>
   <div class="cyber-line"></div>
 
   <div class="menu-box">
-    <a href="lampu.html" class="menu-card">💡 Lampu Otomatis</a>
-    <a href="bel.html" class="menu-card">🔔 Bel Otomatis</a>
-  </div>
+  <a href="bel.html" class="menu-card">🔔 Bel Otomatis</a>
+</div>
 </main>
 
 <footer>© 2025 Smart IoT Futuristic UI</footer>
@@ -203,6 +201,11 @@ function toggleMenu() {
   }
 }
 </script>
+<script>
+if(sessionStorage.getItem("isLogin") !== "true"){
+  window.location.href = "login.html";
+}
 
+</script>
 </body>
 </html>
