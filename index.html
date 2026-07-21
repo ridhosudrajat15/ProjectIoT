@@ -11,10 +11,11 @@
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
 
   body {
-    height:100vh; display:flex; flex-direction:column;
-    background: radial-gradient(circle at top, #042a52, #020b14);
-    color:white;
-  }
+  height:100vh; 
+  overflow:hidden; /* ⛔ penting */
+  background: radial-gradient(circle at top, #042a52, #020b14);
+  color:white;
+}
 
  /* HEADER FIXED */
 header {
@@ -82,14 +83,22 @@ header {
 
 /* MAIN SCROLL ONLY */
 main {
-  margin-top: 60px;
-  margin-bottom: 50px;
-  height: calc(100vh - 110px);
+  position: fixed;
+  top: 60px;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+
   overflow-y: auto;
   padding:15px;
-  display:flex; flex-direction:column;
-  justify-content:center; align-items:center;
+
+  display:flex; 
+  flex-direction:column;
+  justify-content:center; 
+  align-items:center;
   text-align:center;
+
+  scroll-behavior: smooth; /* optional tapi keren */
 }
 
 /* FOOTER FIXED */
@@ -203,13 +212,13 @@ h1 {
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <main>
-  <h1>Monitoring & Control</h1>
+  <h1>SYSTEM CONTROL</h1>
   <div class="cyber-line"></div>
   <a onclick="goDashboard()" class="btn-neon">Masuk ke Dashboard</a>
 
 </main>
 
-<footer>© Ridho Sudrajat</footer>
+<footer>© RIDHO SUDRAJAT</footer>
 
 <script>
 function toggleMenu() {
@@ -223,13 +232,25 @@ function toggleMenu() {
     sidebar.style.left = "0px";
     overlay.classList.add("active");
   }
+
 }
 function goDashboard() {
   document.getElementById("loader").classList.add("active");
   setTimeout(() => {
-    window.location.href = "dasboard.html";
+    window.location.href = "login.html";
   }, 1600); // durasi loading 1.6 detik
 }
+
+if(sessionStorage.getItem("isLogin") === "true"){
+  window.location.replace("dasboard.html");
+}
+window.addEventListener("pageshow", function () {
+  document.getElementById("loader").classList.remove("active");
+});
+
+window.addEventListener("load", function () {
+  document.getElementById("loader").classList.remove("active");
+});
 </script>
 <div class="loader-bg" id="loader">
   <div class="neon-loader"></div>
@@ -237,4 +258,3 @@ function goDashboard() {
 
 </body>
 </html>
-
