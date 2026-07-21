@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Smart IoT</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin:0; padding:0; box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+body {
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top, #042a52, #020b14);
+  color:white;
+}
+
+/* CARD LOGIN */
+.login-box {
+  width:320px;
+  padding:30px;
+  border-radius:15px;
+
+  background: rgba(0,255,255,0.05);
+  border:1px solid rgba(0,255,255,0.2);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 20px rgba(0,255,255,0.25);
+  text-align:center;
+}
+
+/* TITLE */
+.login-box h2 {
+  margin-bottom:20px;
+  text-shadow:0 0 10px #00eaff;
+}
+
+/* INPUT */
+.input-group {
+  margin-bottom:15px;
+  text-align:left;
+}
+
+.input-group label {
+  font-size:13px;
+  color:#00eaff;
+}
+
+.input-group input {
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:8px;
+  border:1px solid rgba(0,255,255,0.3);
+  background: rgba(0,255,255,0.05);
+  color:#00eaff;
+  outline:none;
+}
+
+.input-group input::placeholder {
+  color:rgba(0,255,255,0.5);
+}
+
+/* BUTTON */
+.btn-login {
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+
+  background:#00eaff;
+  color:#001015;
+  font-weight:600;
+  cursor:pointer;
+
+  box-shadow:0 0 10px #00eaff;
+  transition:0.3s;
+}
+
+.btn-login:hover {
+  transform:scale(1.05);
+  box-shadow:0 0 20px #00eaff;
+}
+
+/* ERROR */
+.error {
+  margin-top:10px;
+  font-size:12px;
+  color:#ff4d4d;
+  display:none;
+}
+
+/* LOADER */
+.loader-bg {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,15,25,0.95);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  visibility:hidden;
+  opacity:0;
+  transition:0.3s;
+}
+
+.loader-bg.active {
+  visibility:visible;
+  opacity:1;
+}
+
+.neon-loader {
+  width:60px;
+  height:60px;
+  border:5px solid rgba(0,255,255,0.2);
+  border-top:5px solid #00eaff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform:rotate(360deg); }
+}
+
+/* POPUP BACKGROUND */
+.help-popup {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  visibility:hidden;
+  opacity:0;
+  transition:0.3s;
+  z-index:9999;
+}
+
+.help-popup.active {
+  visibility:visible;
+  opacity:1;
+}
+
+/* BOX */
+.help-box {
+  width:280px;
+  padding:25px;
+  border-radius:12px;
+  text-align:center;
+
+  background: rgba(0,255,255,0.05);
+  border:1px solid rgba(0,255,255,0.3);
+
+  box-shadow:0 0 20px #00eaff;
+}
+
+.help-box h3 {
+  color:#00eaff;
+  margin-bottom:10px;
+}
+
+.help-box button {
+  margin-top:15px;
+  padding:8px 18px;
+  border:none;
+  border-radius:6px;
+
+  background:#00eaff;
+  color:#001015;
+  cursor:pointer;
+  font-weight:600;
+
+  box-shadow:0 0 10px #00eaff;
+}
+
+.help-box button:hover {
+  box-shadow:0 0 20px #00eaff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>🔐 Login System</h2>
+
+  <div class="input-group">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Masukkan username">
+  </div>
+
+  <div class="input-group">
+  <label>Password</label>
+  <div style="position:relative;">
+    <input type="password" id="password" placeholder="Masukkan password">
+    <img id="eyeIcon" onclick="togglePass()" 
+  src="eyee.png"
+  style="
+    position:absolute; 
+    right:10px; 
+    top:50%; 
+    transform:translateY(-50%);
+    cursor:pointer;
+    width:22px;
+    height:22px;
+  ">
+  </div>
+</div>
+
+  <button class="btn-login" onclick="login()">LOGIN</button>
+  <p style="margin-top:10px; font-size:12px; text-align:center;">
+  <a href="#" onclick="showHelp()" 
+   style="color:#00eaff; text-decoration:none;"
+   onmouseover="this.style.textDecoration='underline'"
+   onmouseout="this.style.textDecoration='none'">
+  Butuh bantuan?
+</a>
+</p>
+
+  <div class="error" id="errorMsg">Username atau Password salah!</div>
+</div>
+
+<div class="loader-bg" id="loader">
+  <div class="neon-loader"></div>
+</div>
+<div class="help-popup" id="helpPopup">
+  <div class="help-box">
+    <p>Silakan hubungi admin sekolah:</p>
+
+    <div style="margin-top:15px; text-align:left;">
+
+  <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+    <span>✆</span>
+    <a href="tel:0812xxxxxxxx" style="color:#00eaff; text-decoration:none;">
+  0812-xxxx-xxxx
+</a>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:8px; max-width:100%;">
+  <span>✉︎</span>
+  <a href="mailto:ridhosudrajat53@gmail.com" 
+   style="color:#00eaff; text-decoration:none; word-break: break-all;">
+  ridhosudrajat53@gmail.com
+</a>
+</div>
+
+</div>
+
+    <button onclick="closeHelp()">Tutup</button>
+  </div>
+</div>
+<script>
+//  kalo sudah login
+if(sessionStorage.getItem("isLogin") === "true"){
+  window.location.replace("dasboard.html");
+}
+
+function login(){
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  //  VALIDASI KOSONG
+  if(user === "" || pass === ""){
+    let err = document.getElementById("errorMsg");
+    err.innerText = "Harap isi semua field!";
+    err.style.display = "block";
+    return;
+  }
+
+  // LOGIN SEDERHANA
+  if(user === "admin" && pass === "12345"){
+    
+    document.getElementById("errorMsg").style.display = "none";
+    document.getElementById("loader").classList.add("active");
+
+    setTimeout(() => {
+      sessionStorage.setItem("isLogin", "true");
+      window.location.href = "dasboard.html";
+    }, 1200);
+
+  } else {
+    let err = document.getElementById("errorMsg");
+    err.innerText = "Username atau Password salah!";
+    err.style.display = "block";
+  }
+}
+
+// CEGAH BACK KE LOGIN
+if(sessionStorage.getItem("isLogin") === "true"){
+  window.location.replace("dasboard.html");
+}
+function togglePass(){
+  let input = document.getElementById("password");
+  let icon = document.getElementById("eyeIcon");
+
+  if(input.type === "password"){
+    input.type = "text";
+    icon.src = "eyeslash.png";
+  } else {
+    input.type = "password";
+    icon.src = "eyee.png";
+  }
+}
+
+function showHelp(){
+  document.getElementById("helpPopup").classList.add("active");
+}
+
+function closeHelp(){
+  document.getElementById("helpPopup").classList.remove("active");
+}
+// ⏎ LOGIN DENGAN ENTER
+document.addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
+document.getElementById("helpPopup").addEventListener("click", function(e){
+  if(e.target === this){
+    closeHelp();
+  }
+});
+
+</script>
+
+</body>
+</html>
